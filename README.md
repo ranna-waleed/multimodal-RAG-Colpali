@@ -1,7 +1,7 @@
 # Multi-Modal Document Intelligence System
 ### DSAI 413 — Assignment 1 | RAG-Based QA System
 
-A document question-answering system that understands PDFs **visually** — including tables, charts, figures, and text — using ColPali embeddings, Qdrant vector search, and LLaMA 4 for cited answers.
+A document question-answering system that understands PDFs **visually** : including tables, charts, figures, and text . using ColPali embeddings, Qdrant vector search, and LLaMA 4 for cited answers.
 
  **[Video Demo](https://drive.google.com/drive/folders/1Ne_dVJBJgO2PHw7s6y_-vfNoe-JMfomL?usp=sharing)**
 
@@ -30,31 +30,29 @@ This system was tested on the **IMF Article IV Consultation Report — India (20
 
 **Source:** https://www.imf.org/en/Publications/CR/Issues/2025
 
-> This is exactly the type of complex, information-rich document the assignment targets — financial and policy documents where conventional text-only QA systems fail.
-
 ---
 
 ## Architecture
 
 ```
 PDF Upload
-    ↓
-PyMuPDF → Page Images (JPEG, 100 DPI)
-    ↓
+    
+PyMuPDF : Page Images (JPEG, 100 DPI)
+    
 ColIdefics3 / ColSmol-256M (ColPali family)
-    → 128-dim Multi-Vector Embeddings per page
-    ↓
-Local Qdrant → Vector Storage (Cosine similarity, MAX_SIM)
-    ↓
+    - 128-dim Multi-Vector Embeddings per page
+    
+Local Qdrant : Vector Storage (Cosine similarity, MAX_SIM)
+    
 User Query
-    → ColIdefics3 Query Embedding
-    → Qdrant Top-K Search
-    → Retrieved Page Images
-    ↓
+    - ColIdefics3 Query Embedding
+    - Qdrant Top-K Search
+    - Retrieved Page Images
+    
 LLaMA 4 Scout 17B (Groq API)
-    → Answer with page-level citations
-    ↓
-Streamlit UI → Answer + Sources + Page Images displayed
+    - Answer with page-level citations
+    
+Streamlit UI : Answer + Sources + Page Images displayed
 ```
 
 ---
@@ -67,7 +65,7 @@ Streamlit UI → Answer + Sources + Page Images displayed
 | Vector index | Local Qdrant with 128-dim multi-vector embeddings and MAX_SIM cosine similarity |
 | Smart chunking | Page-level semantic chunking — each page is one self-contained chunk |
 | QA chatbot | Interactive Streamlit interface with example questions and real-time answers |
-| Source attribution | Every answer includes page number citations (e.g. "According to Page 5...") |
+| Source attribution | Every answer includes page number citations (e.g. "According to Page 5") |
 | Evaluation suite | 7 benchmark queries across text, table, and chart modalities — 100% accuracy |
 
 ---
@@ -83,7 +81,7 @@ Streamlit UI → Answer + Sources + Page Images displayed
 | User Interface | Streamlit |
 | Language | Python 3.11 |
 
-> **Note on model choice:** The system uses ColIdefics3 from the ColPali family (ColSmol-256M variant, 256MB). We initially implemented ColQwen2.5 — the flagship ColPali model with 89.4% ViDoRe benchmark score — but switched to the lighter variant due to local hardware constraints (CPU-only, 16GB RAM). Both models share the same ColPali visual retrieval architecture. On a GPU machine, simply change `COLPALI_MODEL_NAME = "vidore/colqwen2.5-v0.2"` in `app/config.py` to use the full model.
+> **Note on model choice:** The system uses ColIdefics3 from the ColPali family (ColSmol-256M variant, 256MB). We initially implemented ColQwen2.5, the flagship ColPali model with 89.4% ViDoRe benchmark score, but switched to the lighter variant due to local hardware constraints (CPU-only, 16GB RAM). Both models share the same ColPali visual retrieval architecture. On a GPU machine, simply change `COLPALI_MODEL_NAME = "vidore/colqwen2.5-v0.2"` in `app/config.py` to use the full model.
 
 ---
 
@@ -193,23 +191,7 @@ Open **http://localhost:8501** in your browser.
 
 ---
 
-## Evaluation Results
-
-Benchmark evaluation on 7 queries across multiple modalities:
-
-| # | Query | Type | Pages Retrieved | Result |
-|---|-------|------|----------------|--------|
-| 1 | What is the main topic? | Text | Correct pages | Pass |
-| 2 | Summarize key findings | Text | Correct pages | Pass |
-| 3 | What numbers are mentioned? | Table | Correct pages | Pass |
-| 4 | What do the charts show? | Chart | Correct pages | Pass |
-| 5 | What are main conclusions? | Text | Correct pages | Pass |
-| 6 | What methodology is used? | Text | Correct pages | Pass |
-| 7 | What are the recommendations? | Text | Correct pages | Pass |
-
-**Result: 7/7 — 100% retrieval accuracy**
-
-Run the evaluation yourself:
+Run the evaluation :
 ```bash
 python -m evaluation.eval_queries
 ```
